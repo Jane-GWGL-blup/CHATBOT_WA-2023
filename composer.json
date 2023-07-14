@@ -1,5 +1,6 @@
 {
     "require": {
-        "axiom/rivescript": "^0.3.0"
+        "axiom/rivescript": "^0.3.0",
+        "vlucas/phpdotenv": "^5.5"
     }
 }

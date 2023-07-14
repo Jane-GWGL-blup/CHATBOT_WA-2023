@@ -8,18 +8,20 @@ require 'vendor/autoload.php';
 //IMPORTAMOS LAS LIBRERIRAS DE Rivescript
 use \Axiom\Rivescript\Rivescript;
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 /*
  * VERIFICACION DEL WEBHOOK
 */
 //TOQUEN QUE QUERRAMOS PONER 
-$token = 'HSChatBotWA';
+$token = $_ENV['WEBHOOK'];
 //RETO QUE RECIBIREMOS DE FACEBOOK
-$palabraReto = $_GET['hub_challenge'];
+$challenge_word = $_GET['hub_challenge'];
 //TOQUEN DE VERIFICACION QUE RECIBIREMOS DE FACEBOOK
-$tokenVerificacion = $_GET['hub_verify_token'];
+$verify_token = $_GET['hub_verify_token'];
 //SI EL TOKEN QUE GENERAMOS ES EL MISMO QUE NOS ENVIA FACEBOOK RETORNAMOS EL RETO PARA VALIDAR QUE SOMOS NOSOTROS
-if ($token === $tokenVerificacion) {
-    echo $palabraReto;
+if ($token === $verify_token) {
+    echo $challenge_word;
     exit;
 }
 
@@ -27,60 +29,93 @@ if ($token === $tokenVerificacion) {
  * RECEPCION DE MENSAJES
  */
 //LEEMOS LOS DATOS ENVIADOS POR WHATSAPP
-$respuesta = file_get_contents("php://input");
+$response = file_get_contents("php://input");
 //CONVERTIMOS EL JSON EN ARRAY DE PHP
-$respuesta = json_decode($respuesta, true);
+$response = json_decode($response, true);
 //EXTRAEMOS EL MENSAJE DEL ARRAY
-$mensaje=$respuesta['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'];
+$message=$response['entry'][0]['changes'][0]['value']['messages'][0]['text']['body'];
 //EXTRAEMOS EL TELEFONO DEL ARRAY
-$telefonoCliente=$respuesta['entry'][0]['changes'][0]['value']['messages'][0]['from'];
+$customer_phone=$response['entry'][0]['changes'][0]['value']['messages'][0]['from'];
 //EXTRAEMOS EL ID DE WHATSAPP DEL ARRAY
-$id=$respuesta['entry'][0]['changes'][0]['value']['messages'][0]['id'];
+$id=$response['entry'][0]['changes'][0]['value']['messages'][0]['id'];
 //EXTRAEMOS EL TIEMPO DE WHATSAPP DEL ARRAY
-$timestamp=$respuesta['entry'][0]['changes'][0]['value']['messages'][0]['timestamp'];
+$timestamp=$response['entry'][0]['changes'][0]['value']['messages'][0]['timestamp'];
 
 
 //SI HAY UN MENSAJE
-if($mensaje!=null){
-    //file_put_contents("text.txt", $mensaje);
-    //INICIALIZAMOS RIVESCRIPT Y CARGAMOS LA CONVERSACION
-    $rivescript = new Rivescript();
-    $rivescript->load('rstrainingia.rive');
-    //OBTENEMOS LA RESPUESTA
-    $respuesta= $rivescript->reply($mensaje);
-    //ESCRIBIMOS LA RESPUESTA
-    //file_put_contents("text.txt", $respuesta);
+if($message!=null){
+    
+    // Array para mapear caracteres con tildes a caracteres sin tildes
+    $unwanted_array = array(    
+        'á'=>'a', 'Á'=>'a',
+        'é'=>'e', 'É'=>'e',
+        'í'=>'i', 'Í'=>'i',
+        'ó'=>'o', 'Ó'=>'o',
+        'ú'=>'u', 'Ú'=>'u',
+    );
 
-    //LLAMAMMOS A LA FUNCION DE ENVIAR RESPUESTA
+    $message = strtr($message, $unwanted_array);  // Reemplaza los caracteres con tildes
+    $message = strtolower($message); // Convertir el message a minúsculas para facilitar la comparación
+    /*
+    * LOGICA DE LA CONVERSACION
+    */
+    if (empty($message)) {
+        // No se ha recibido ninguna response después del message de bienvenida anterior
+        // No se envía ningún message adicional
+        exit;
+    } elseif (strpos($message, 'hola') !== false || strpos($message, 'hay alguien') !== false || strpos($message, 'como estas') !== false) {
+        $response= "¡Hola! Soy Diana tu asistente virtual de Reliser Safety Training." .'\n'. "¿En que puedo ayudarte?".'\n\n'."1️⃣ ¿Algún asesor? 🧑🏻".'\n'."2️⃣ Dirección 🗺️".'\n'."3️⃣ Horario de atención 🕜".'\n'."4️⃣ Página Web 🌐".'\n'."5️⃣ Telefono 📱".'\n\n'.'_'."Si desea visualizar de nuevo el menú posteriormente escriba ".'*'."Menú".'*'.'_';
+        $type = 'text'; // Tipo de message: texto
+    } elseif (strpos($message, 'menu') !== false || strpos($message, 'brindame el menu') !== false) {
+        $related_response=[
+            "Por supuesto aquí esta el menú de opciones: ".'\n\n'."1️⃣ ¿Algún asesor? 🧑🏻".'\n'."2️⃣ Dirección 🗺️".'\n'."3️⃣ Horario de atención 🕜".'\n'."4️⃣ Página Web 🌐".'\n'."5️⃣ Telefono 📱",
+            "¡Claro! Estas son las opciones que puedes elegir: ".'\n\n'."1️⃣ ¿Algún asesor? 🧑🏻".'\n'."2️⃣ Dirección 🗺️".'\n'."3️⃣ Horario de atención 🕜".'\n'."4️⃣ Página Web 🌐".'\n'."5️⃣ Telefono 📱"
+        ];
+        $response = $related_response[array_rand($related_response)];
+        $type = 'text'; // Tipo de message: texto
+    }
+    elseif (strpos($message, '1') !== false || strpos($message, 'asesor') !== false || strpos($message, 'encargado') !== false ) {
+        //En aquí pasamos algun link de algun asesor
+        $response = "Interactua con algún asesor:".'\n'."- Asesor A: https://wa.me/51963043991".'\n'.'\n'."- Asesor B: https://wa.me/51963043991";
+        $type = 'text'; // Tipo de message: texto
+    } elseif (strpos($message, '2') !== false || strpos($message, 'direccion') !== false || strpos($message, 'ubicacion') !== false || strpos($message, 'lugar') !== false ) {
+        $related_response=[
+            "Nos encontramos ubicados en el pasaje Islas Marquesas, La Perla - Callao",
+            "Nos ubicamos en psj. Islas Marquesas, La Perla - Callao"
+        ];
+        $response = $related_response[array_rand($related_response)];
+        $type = 'text'; // Tipo de message: texto
+    } elseif (strpos($message, '3') !== false || strpos($message, 'hora') !== false || strpos($message, 'horarios') !== false || strpos($message, 'dias') !== false || strpos($message, 'abierto') !== false) {
+        $response = "➡️ Lunes a viernes abrimos de ".'*'."9:00 A.M. a 17:00 P.M.".'*'.'\n'."➡️ Sábados abrimos de ".'*'."08:00 a 12:00".'*'.'\n'."➡️ Domingos no hay atención";
+        $type = 'text'; // Tipo de message: texto
+    } elseif (strpos($message, '4') !== false || strpos($message, 'pagina web') !== false || strpos($message, 'web') !== false || strpos($message, 'pagina') !== false) {
+        $response = 'Visítanos en http://www.rstraining.org.pe/';
+        $type = 'text'; // Tipo de message: texto
+    } elseif (strpos($message, '5') !== false || strpos($message, 'telefono') !== false || strpos($message, 'celular') !== false || strpos($message, 'cel') !== false) {
+        $response = 'Nuestro teléfono es 963043991';
+        $type = 'text'; // Tipo de message: texto
+    } elseif (strpos($message, 'aviso') !== false || strpos($message, 'oferta') !== false) {
+        $response = "https://i.imgur.com/GOYNyt3.png";
+        $type = 'image'; // Tipo de message: imagen
+    } elseif (strpos($message, 'doc') !== false || strpos($message, 'documento') !== false) {
+        $response = "https://www.unicef.org/media/48611/file";
+        $type = 'file'; // Tipo de message: documento
+    }  else {
+        $unrelated_response = [
+            "Lo siento, no puedo ayudarte con esa pregunta en este momento. ¿Hay algo más en lo que pueda asistirte?",
+            "No estoy seguro de entender tu pregunta. ¿Podrías reformularla de otra manera?",
+            "Esa pregunta está fuera del alcance de mis capacidades actuales. ¿Hay algo más con lo que pueda ayudarte?"
+        ];
+        $response = $unrelated_response[array_rand($unrelated_response)];
+        $type = 'text'; // Tipo de message: texto
+    }
+
+    //LLAMAMMOS A LA FUNCION DE ENVIAR response
     require_once './enviar.php';
-    //ENVIAMOS LA RESPUESTA VIA WHATSAPP
-    enviar($mensaje,$respuesta,$id,$timestamp,$telefonoCliente);
+    //ENVIAMOS LA response VIA WHATSAPP
+    enviar($message, $type, $response,$id,$timestamp,$customer_phone);
+    $message = ''; 
 }
-
-// Función para generar el enlace
-function generateLink($query) {
-    $url = "http://google.com/search?q=" . urlencode($query);
-    $link = '<a href="' . $url . '">Click aquí</a>';
-    return $link;
-}
-
-// Obtén la respuesta de RiveScript
-$reply = $bot->reply($input);
-
-// Procesa las variables y llamadas a funciones en RiveScript
-$processedReply = $bot->stream->setUservar('botreply', $reply)->getUservars();
-
-// Reemplaza la variable [link] con el enlace HTML generado
-$processedReply = str_replace("[link]", "<?php echo generateLink", $processedReply);
-$processedReply = str_replace("]", "; ?>", $processedReply);
-
-// Evalúa el código PHP en la respuesta
-ob_start();
-eval("?> $processedReply <?php ");
-$finalReply = ob_get_clean();
-
-// Imprime la respuesta del bot
-echo $finalReply;
 
 
 
