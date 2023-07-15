@@ -5,8 +5,6 @@ ini_set('display_startup_errors', 0);
 error_reporting(-1);
 
 require 'vendor/autoload.php';
-//IMPORTAMOS LAS LIBRERIRAS DE Rivescript
-use \Axiom\Rivescript\Rivescript;
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
@@ -86,25 +84,25 @@ if($message!=null){
         $response = $related_response[array_rand($related_response)];
         $type = 'text'; // Tipo de message: texto
     } elseif (strpos($message, '3') !== false || strpos($message, 'hora') !== false || strpos($message, 'horarios') !== false || strpos($message, 'dias') !== false || strpos($message, 'abierto') !== false) {
-        $response = "➡️ Lunes a viernes abrimos de ".'*'."9:00 A.M. a 17:00 P.M.".'*'.'\n'."➡️ Sábados abrimos de ".'*'."08:00 a 12:00".'*'.'\n'."➡️ Domingos no hay atención";
+        $response = "➡️ Lunes a viernes estamos disponibles de ".'*'."9:00 A.M. a 17:00 P.M.".'*'.'\n'."➡️ Sábados abrimos de ".'*'."08:00 a 12:00".'*'.'\n'."➡️ Domingos no hay atención";
         $type = 'text'; // Tipo de message: texto
     } elseif (strpos($message, '4') !== false || strpos($message, 'pagina web') !== false || strpos($message, 'web') !== false || strpos($message, 'pagina') !== false) {
         $response = 'Visítanos en http://www.rstraining.org.pe/';
         $type = 'text'; // Tipo de message: texto
     } elseif (strpos($message, '5') !== false || strpos($message, 'telefono') !== false || strpos($message, 'celular') !== false || strpos($message, 'cel') !== false) {
-        $response = 'Nuestro teléfono es 963043991';
+        $response = 'Nuestro número de teléfono es 963043991';
         $type = 'text'; // Tipo de message: texto
     } elseif (strpos($message, 'aviso') !== false || strpos($message, 'oferta') !== false) {
-        $response = "https://i.imgur.com/GOYNyt3.png";
+        $response = "https://i.imgur.com/GOYNyt3.png"; //Aquí va el enlace de la imagen que quieres mostrar
         $type = 'image'; // Tipo de message: imagen
     } elseif (strpos($message, 'doc') !== false || strpos($message, 'documento') !== false) {
-        $response = "https://www.unicef.org/media/48611/file";
+        $response = "https://www.unicef.org/media/48611/file"; //Aquí va el enlace del archivo que quieres mandar
         $type = 'file'; // Tipo de message: documento
     }  else {
         $unrelated_response = [
-            "Lo siento, no puedo ayudarte con esa pregunta en este momento. ¿Hay algo más en lo que pueda asistirte?",
-            "No estoy seguro de entender tu pregunta. ¿Podrías reformularla de otra manera?",
-            "Esa pregunta está fuera del alcance de mis capacidades actuales. ¿Hay algo más con lo que pueda ayudarte?"
+            "Lo siento, no puedo ayudarte con esa consulta en este momento. ¿Hay algo más en lo que pueda asistirte?",
+            "No estoy seguro de entender tu consulta. ¿Podrías reformularla de otra manera?",
+            "Esa consulta está fuera del alcance de mis capacidades actuales. ¿Hay algo más con lo que pueda ayudarte?"
         ];
         $response = $unrelated_response[array_rand($unrelated_response)];
         $type = 'text'; // Tipo de message: texto

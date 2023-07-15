@@ -70,46 +70,8 @@ function enviar($received, $type, $sent, $idWA,$timestamp,$customer_phone) {
             . '     "filename":"UNICEF.pdf"'
             . '}'
             . '} ';
-        } elseif($type === "button-reply"){
-            $message = '{'
-                . '"messaging_product": "whatsapp", '
-                . '"recipient_type": "individual",'
-                . '"to": "' . $phone . '", '
-                . '"type": "interactive", '
-                . '"interactive":'
-                . '{'
-                . '     "type": "button", '
-                . '     "body":'
-                . '{'
-                . '         "text": "' . $sent . '"'
-                . '}, '
-                . '     "action":'
-                . '{'
-                . '         "buttons":'
-                . '['
-                . '{'
-                . '                 "type": "reply", '
-                . '                 "reply":'
-                . '{'
-                . '                     "id": "unique-postback-id-1",'
-                . '                     "title": "Asesor A" '
-                . '}'
-                . '},'
-                . '{'
-                . '                 "type": "reply", '
-                . '                 "reply":'
-                . '{'
-                . '                     "id": "unique-postback-id-2",'
-                . '                     "title": "Asesor B" '
-                . '}'
-                . '}'
-                . ']'
-                . '}'
-                . '}'
-                . '}';
-            
-        }
-        
+        } 
+
 
         //DECLARAMOS LAS CABECERAS
         $header = array("Authorization: Bearer " . $token, "Content-Type: application/json",);
@@ -128,10 +90,14 @@ function enviar($received, $type, $sent, $idWA,$timestamp,$customer_phone) {
 
 
         //INSERTAMOS LOS REGISTROS DEL ENVIO DEL WHATSAPP
-        $sql = "INSERT INTO registro "
-            . "(mensaje_recibido    ,mensaje_enviado   ,id_wa        ,timestamp_wa        ,     telefono_wa) VALUES "
-            . "('" . $received . "' ,'" . $sent . "','" . $idWA . "','" . $timestamp . "','" . $customer_phone . "');";
-        $conn->query($sql);
-        $conn->close();
+            // Preparar la consulta SQL con una sentencia preparada
+        $sql = "INSERT INTO registro (mensaje_recibido, mensaje_enviado, id_wa, timestamp_wa, telefono_wa) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+            // Vincular los valores a los parámetros de la sentencia preparada
+        $stmt->bind_param("sssss", $received, $sent, $idWA, $timestamp, $customer_phone);
+        $stmt->execute();
+        $stmt->close();
+    
+
     }
 }
