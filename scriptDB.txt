@@ -1,0 +1,50 @@
+-- phpMyAdmin SQL Dump
+-- version 5.1.1
+-- https://www.phpmyadmin.net/
+--
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+-- Ejemplo --
+-- Base de datos: `chat` 
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `registro`
+--
+
+CREATE TABLE `registro` (
+  `id` int(5) NOT NULL,
+  `fecha_hora` datetime DEFAULT current_timestamp(),
+  `mensaje_recibido` varchar(1000) DEFAULT '',
+  `mensaje_enviado` varchar(1000) DEFAULT '',
+  `id_wa` varchar(1000) DEFAULT '',
+  `timestamp_wa` int(15) DEFAULT NULL,
+  `telefono_wa` varchar(50) DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `registro`
+--
+ALTER TABLE `registro`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `registro`
+--
+ALTER TABLE `registro`
+  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT;
+COMMIT;
+
