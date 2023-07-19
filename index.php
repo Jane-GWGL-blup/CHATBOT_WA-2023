@@ -12,7 +12,7 @@ $dotenv->load();
  * VERIFICACION DEL WEBHOOK
 */
 //TOQUEN QUE QUERRAMOS PONER 
-$token = $_ENV['WEBHOOK'];
+$token = $_ENV['WEBHOOK_IDENTIFIER'];
 //RETO QUE RECIBIREMOS DE FACEBOOK
 $challenge_word = $_GET['hub_challenge'];
 //TOQUEN DE VERIFICACION QUE RECIBIREMOS DE FACEBOOK
@@ -62,12 +62,12 @@ if($message!=null){
         // No se envía ningún message adicional
         exit;
     } elseif (strpos($message, 'hola') !== false || strpos($message, 'hay alguien') !== false || strpos($message, 'como estas') !== false) {
-        $response= "¡Hola! Soy Diana tu asistente virtual de Reliser Safety Training." .'\n'. "¿En que puedo ayudarte?".'\n\n'."1️⃣ ¿Algún asesor? 🧑🏻".'\n'."2️⃣ Dirección 🗺️".'\n'."3️⃣ Horario de atención 🕜".'\n'."4️⃣ Página Web 🌐".'\n'."5️⃣ Telefono 📱".'\n\n'.'_'."Si desea visualizar de nuevo el menú posteriormente escriba ".'*'."Menú".'*'.'_';
+        $response= "¡Hola! Soy Diana tu asistente virtual de Reliser Safety Training." .'\n'. "¿En que puedo ayudarte?".'\n\n'."1️⃣ ¿Algún asesor? 🧑🏻".'\n'."2️⃣ Dirección 🗺️".'\n'."3️⃣ Horario de atención 🕜".'\n'."4️⃣ Página Web 🌐".'\n'."5️⃣ Telefono 📱".'\n'."6️⃣ Sobre los servicios".'\n\n'.'_'."Si desea visualizar de nuevo el menú posteriormente escriba ".'*'."Menú".'*'.'_';
         $type = 'text'; // Tipo de message: texto
     } elseif (strpos($message, 'menu') !== false || strpos($message, 'brindame el menu') !== false) {
         $related_response=[
-            "Por supuesto aquí esta el menú de opciones: ".'\n\n'."1️⃣ ¿Algún asesor? 🧑🏻".'\n'."2️⃣ Dirección 🗺️".'\n'."3️⃣ Horario de atención 🕜".'\n'."4️⃣ Página Web 🌐".'\n'."5️⃣ Telefono 📱",
-            "¡Claro! Estas son las opciones que puedes elegir: ".'\n\n'."1️⃣ ¿Algún asesor? 🧑🏻".'\n'."2️⃣ Dirección 🗺️".'\n'."3️⃣ Horario de atención 🕜".'\n'."4️⃣ Página Web 🌐".'\n'."5️⃣ Telefono 📱"
+            "Por supuesto aquí esta el menú de opciones: ".'\n\n'."1️⃣ ¿Algún asesor? 🧑🏻".'\n'."2️⃣ Dirección 🗺️".'\n'."3️⃣ Horario de atención 🕜".'\n'."4️⃣ Página Web 🌐".'\n'."5️⃣ Telefono 📱".'\n'."6️⃣ Sobre los servicios",
+            "¡Claro! Estas son las opciones que puedes elegir: ".'\n\n'."1️⃣ ¿Algún asesor? 🧑🏻".'\n'."2️⃣ Dirección 🗺️".'\n'."3️⃣ Horario de atención 🕜".'\n'."4️⃣ Página Web 🌐".'\n'."5️⃣ Telefono 📱".'\n'."6️⃣ Sobre los servicios"
         ];
         $response = $related_response[array_rand($related_response)];
         $type = 'text'; // Tipo de message: texto
@@ -84,7 +84,7 @@ if($message!=null){
         $response = $related_response[array_rand($related_response)];
         $type = 'text'; // Tipo de message: texto
     } elseif (strpos($message, '3') !== false || strpos($message, 'hora') !== false || strpos($message, 'horarios') !== false || strpos($message, 'dias') !== false || strpos($message, 'abierto') !== false) {
-        $response = "➡️ Lunes a viernes estamos disponibles de ".'*'."9:00 A.M. a 17:00 P.M.".'*'.'\n'."➡️ Sábados abrimos de ".'*'."08:00 a 12:00".'*'.'\n'."➡️ Domingos no hay atención";
+        $response = "Horarios de Atención:".'\n'."➡️ Lunes a viernes estamos disponibles de ".'*'."9:00 A.M. a 17:00 P.M.".'*'.'\n'."➡️ Sábados abrimos de ".'*'."08:00 a 12:00".'*'.'\n'."➡️ Domingos no hay atención";
         $type = 'text'; // Tipo de message: texto
     } elseif (strpos($message, '4') !== false || strpos($message, 'pagina web') !== false || strpos($message, 'web') !== false || strpos($message, 'pagina') !== false) {
         $response = 'Visítanos en http://www.rstraining.org.pe/';
@@ -92,6 +92,10 @@ if($message!=null){
     } elseif (strpos($message, '5') !== false || strpos($message, 'telefono') !== false || strpos($message, 'celular') !== false || strpos($message, 'cel') !== false) {
         $response = 'Nuestro número de teléfono es 963043991';
         $type = 'text'; // Tipo de message: texto
+    } elseif (strpos($message, '6') !== false || strpos($message, 'servicios') !== false || strpos($message, 'cuales son sus servicios') !== false || strpos($message, 'que servicios tiene') !== false) {
+            $response = "Los servicios que ofrecemos son: ".'\n'.'*'."7.".'*'." Seguridad y Salud en el Trabajo".'\n'.'*'."8.".'*'." Salud Ocupacional".'\n'.'*'."9.".'*'." HSE y Safety".'\n'.'*'."10.".'*'." Formación y Entrenamiento".'\n'.'*'."11.".'*'." Centro de Entrenamiento internacional ⭐".'\n\n'.'_'."Escribe la opción que desea para mas información.".'_';
+            $type = 'text'; // Tipo de message: texto
+        
     } elseif (strpos($message, 'aviso') !== false || strpos($message, 'oferta') !== false) {
         $response = "https://i.imgur.com/GOYNyt3.png"; //Aquí va el enlace de la imagen que quieres mostrar
         $type = 'image'; // Tipo de message: imagen

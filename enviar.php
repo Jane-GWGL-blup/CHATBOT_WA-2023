@@ -26,7 +26,7 @@ function enviar($received, $type, $sent, $idWA,$timestamp,$customer_phone) {
         //PASAMOS EL TELEFONO DEL CLIENTE
         $phone=$customer_phone;
         //IDENTIFICADOR DE NÚMERO DE TELÉFONO
-        $phoneID=$_ENV['IDENTIFICADOR'];
+        $phoneID=$_ENV['ID_PHONE'];
         //URL A DONDE SE MANDARA EL MENSAJE
         $url = 'https://graph.facebook.com/v15.0/' . $phoneID . '/messages';
         //CONFIGURACION DEL MENSAJE
