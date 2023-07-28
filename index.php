@@ -38,10 +38,11 @@ $customer_phone=$response['entry'][0]['changes'][0]['value']['messages'][0]['fro
 $id=$response['entry'][0]['changes'][0]['value']['messages'][0]['id'];
 //EXTRAEMOS EL TIEMPO DE WHATSAPP DEL ARRAY
 $timestamp=$response['entry'][0]['changes'][0]['value']['messages'][0]['timestamp'];
+//EXTRAEMOS EL MENSAJE DEL ARRAY
 
 
 //SI HAY UN MENSAJE
-if($message!=null){
+if($message!=null ){
     
     // Array para mapear caracteres con tildes a caracteres sin tildes
     $unwanted_array = array(    
@@ -61,15 +62,19 @@ if($message!=null){
         // No se ha recibido ninguna response después del message de bienvenida anterior
         // No se envía ningún message adicional
         exit;
-    } elseif (strpos($message, 'hola') !== false || strpos($message, 'hay alguien') !== false || strpos($message, 'como estas') !== false) {
-        $response= "¡Hola! Soy Diana tu asistente virtual de Reliser Safety Training." .'\n'. "¿En que puedo ayudarte?".'\n\n'."1️⃣ ¿Algún asesor? 🧑🏻".'\n'."2️⃣ Dirección 🗺️".'\n'."3️⃣ Horario de atención 🕜".'\n'."4️⃣ Página Web 🌐".'\n'."5️⃣ Telefono 📱".'\n'."6️⃣ Sobre los servicios".'\n\n'.'_'."Si desea visualizar de nuevo el menú posteriormente escriba ".'*'."Menú".'*'.'_';
+    } elseif (strpos($message, 'hola') !== false || strpos($message, 'hay alguien') !== false || strpos($message, 'como estas') !== false || strpos($message, 'Buenos dias') !== false || strpos($message, 'Buenas tardes') !== false || strpos($message, 'Buenas noches') !== false) {
+        $response= "¡Hola! Soy Diana tu asistente virtual de Reliser Safety Training." .'\n'. "¿En que puedo ayudarte?".'\n\n'."1️⃣ ¿Algún asesor? 🧑🏻".'\n'."2️⃣ Dirección 🗺️".'\n'."3️⃣ Horario de atención 🕜".'\n'."4️⃣ Página Web 🌐".'\n'."5️⃣ Sobre los servicios".'\n\n'.'_'."Si desea visualizar de nuevo el menú posteriormente escriba ".'*'."Menú".'*'.'_';
         $type = 'text'; // Tipo de message: texto
     } elseif (strpos($message, 'menu') !== false || strpos($message, 'brindame el menu') !== false) {
         $related_response=[
-            "Por supuesto aquí esta el menú de opciones: ".'\n\n'."1️⃣ ¿Algún asesor? 🧑🏻".'\n'."2️⃣ Dirección 🗺️".'\n'."3️⃣ Horario de atención 🕜".'\n'."4️⃣ Página Web 🌐".'\n'."5️⃣ Telefono 📱".'\n'."6️⃣ Sobre los servicios",
-            "¡Claro! Estas son las opciones que puedes elegir: ".'\n\n'."1️⃣ ¿Algún asesor? 🧑🏻".'\n'."2️⃣ Dirección 🗺️".'\n'."3️⃣ Horario de atención 🕜".'\n'."4️⃣ Página Web 🌐".'\n'."5️⃣ Telefono 📱".'\n'."6️⃣ Sobre los servicios"
+            "Por supuesto, aquí esta el menú de opciones: ".'\n\n'."1️⃣ ¿Algún asesor? 🧑🏻".'\n'."2️⃣ Dirección 🗺️".'\n'."3️⃣ Horario de atención 🕜".'\n'."4️⃣ Página Web 🌐".'\n'."5️⃣ Sobre los servicios",
+            "¡Claro! Estas son las opciones que puedes elegir: ".'\n\n'."1️⃣ ¿Algún asesor? 🧑🏻".'\n'."2️⃣ Dirección 🗺️".'\n'."3️⃣ Horario de atención 🕜".'\n'."4️⃣ Página Web 🌐".'\n'."65️⃣ Sobre los servicios"
         ];
         $response = $related_response[array_rand($related_response)];
+        $type = 'text'; // Tipo de message: texto
+    }
+    elseif (strpos($message, '10') !== false ) {
+        $response = '*'."Centro de Entrenamiento Internacional ⭐".'*'.'\n\n'."Consultar con un asesor https://wa.me/51963043991";
         $type = 'text'; // Tipo de message: texto
     }
     elseif (strpos($message, '1') !== false || strpos($message, 'asesor') !== false || strpos($message, 'encargado') !== false ) {
@@ -89,14 +94,23 @@ if($message!=null){
     } elseif (strpos($message, '4') !== false || strpos($message, 'pagina web') !== false || strpos($message, 'web') !== false || strpos($message, 'pagina') !== false) {
         $response = 'Visítanos en http://www.rstraining.org.pe/';
         $type = 'text'; // Tipo de message: texto
-    } elseif (strpos($message, '5') !== false || strpos($message, 'telefono') !== false || strpos($message, 'celular') !== false || strpos($message, 'cel') !== false) {
-        $response = 'Nuestro número de teléfono es 963043991';
-        $type = 'text'; // Tipo de message: texto
-    } elseif (strpos($message, '6') !== false || strpos($message, 'servicios') !== false || strpos($message, 'cuales son sus servicios') !== false || strpos($message, 'que servicios tiene') !== false) {
-            $response = "Los servicios que ofrecemos son: ".'\n'.'*'."7.".'*'." Seguridad y Salud en el Trabajo".'\n'.'*'."8.".'*'." Salud Ocupacional".'\n'.'*'."9.".'*'." HSE y Safety".'\n'.'*'."10.".'*'." Formación y Entrenamiento".'\n'.'*'."11.".'*'." Centro de Entrenamiento internacional ⭐".'\n\n'.'_'."Escribe la opción que desea para mas información.".'_';
+    } elseif (strpos($message, '5') !== false || strpos($message, 'servicios') !== false || strpos($message, 'cuales son sus servicios') !== false || strpos($message, 'que servicios tiene') !== false) {
+            $response = "Los servicios que ofrecemos son: ".'\n'.'*'."6.".'*'." Seguridad y Salud en el Trabajo".'\n'.'*'."7.".'*'." Salud Ocupacional".'\n'.'*'."8.".'*'." HSE y Safety".'\n'.'*'."9.".'*'." Formación y Entrenamiento".'\n'.'*'."10.".'*'." Centro de Entrenamiento Internacional ⭐".'\n\n'.'_'."Escribe la opción que desea para mas información.".'_';
             $type = 'text'; // Tipo de message: texto
-        
-    } elseif (strpos($message, 'aviso') !== false || strpos($message, 'oferta') !== false) {
+    } elseif (strpos($message, '6') !== false ) {
+        $response = '*'."Servicio Seguridad y Salud en el Trabajo".'*'.'\n\n'."⏺️ Evaluación y prevención de riesgos laborales".'\n'."⏺️ Capacitación para empleados y empleadores en seguridad y salud".'\n'."⏺️ Asesoramiento en la implementación de medidas preventivas y elaboración de planes de emergencia".'\n'."⏺️ Cumplimiento de la ley SST".'\n'."⏺️ Capacitaciones obligatorias por la ley SST";
+        $type = 'text'; // Tipo de message: texto
+    }  elseif (strpos($message, '7') !== false ) {
+        $response = '*'."Salud Ocupacional".'*'.'\n\n'."⏺️ Capacitación en seguridad y salud en el trabajo".'\n'."⏺️ Prevención de accidentes laborales y enfermedades profesionales".'\n'."⏺️ Programas de rehabilitación".'\n'."⏺️ Seguimiento a la salud de los trabajadores".'\n'."⏺️ Entrenamiento emocional".'\n'."⏺️ Ergonomía";
+        $type = 'text'; // Tipo de message: texto
+    }  elseif (strpos($message, '8') !== false ) {
+        $response = '*'."HSE y Safety".'*'.'\n\n'."⏺️ Identificación de Peligros y Evaluación de Riego (IPERC)".'\n'."⏺️ Análisis de Trabajo (ATS)".'\n'."⏺️ Formación de brigadas de Emergencia".'\n'."⏺️ Primeros auxilios".'\n'."⏺️ Gestión de respuesta ante una emergencia".'\n'."⏺️ Brigada de Lucha Contra Incendios";
+        $type = 'text'; // Tipo de message: texto
+    }  elseif (strpos($message, '9') !== false ) {
+        $response = '*'."Formación y Entrenamiento".'*'.'\n\n'."⏺️ Lucha Contra Incendios".'\n'."⏺️ Brigadas de Emergencia".'\n'."⏺️ Primeros Auxilios".'\n'."⏺️ Trabajo en Equipo".'\n'."⏺️ Liderazgo";
+        $type = 'text'; // Tipo de message: texto
+    } 
+    elseif (strpos($message, 'aviso') !== false || strpos($message, 'oferta') !== false) {
         $response = "https://i.imgur.com/GOYNyt3.png"; //Aquí va el enlace de la imagen que quieres mostrar
         $type = 'image'; // Tipo de message: imagen
     } elseif (strpos($message, 'doc') !== false || strpos($message, 'documento') !== false) {
@@ -118,6 +132,8 @@ if($message!=null){
     enviar($message, $type, $response,$id,$timestamp,$customer_phone);
     $message = ''; 
 }
+
+
 
 
 
