@@ -48,3 +48,49 @@ ALTER TABLE `registro`
   MODIFY `id` int(5) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
+
+{
+  "messaging_product": "whatsapp",
+  "recipient_type": "individual",
+  "to": "51936001232",
+  "type": "template",
+    "template": {
+    "name": "message_services",
+    "language": {
+      "code": "es"
+    },
+      "components": [
+        {
+           "type": "header",
+           "parameters": [
+            {
+            "type": "image",
+            "image": {
+              "link": "https://i.imgur.com/GOYNyt3.png"
+                      }
+            }
+          ]
+        },
+        {
+            "type": "body",
+            "parameters" : [
+             {
+            "type": "text",
+            "text": "TEXT_STRING"
+            },
+            {
+            "type": "currency",
+            "currency": {
+              "fallback_value": "VALUE",
+              "code": "USD",
+              "amount_1000": 120
+                }
+            }
+          ]
+        }
+      ]
+   } 
+}
+
+Curso: {{1}} 
+*Mas información, consulta con algún asesor.* 👈

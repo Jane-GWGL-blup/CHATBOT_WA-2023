@@ -55,6 +55,8 @@ if($message!=null ){
 
     $message = strtr($message, $unwanted_array);  // Reemplaza los caracteres con tildes
     $message = strtolower($message); // Convertir el message a minúsculas para facilitar la comparación
+    $data1= "";
+    $data2= "";
     /*
     * LOGICA DE LA CONVERSACION
     */
@@ -72,6 +74,12 @@ if($message!=null ){
         ];
         $response = $related_response[array_rand($related_response)];
         $type = 'text'; // Tipo de message: texto
+    }
+    elseif (strpos($message, 'sst') !== false ) {
+        $response = "Evaluación y prevención de riesgos laborales";
+        $data1= "https://i.imgur.com/GOYNyt3.png";
+        $data2= "4522";
+        $type = 'course'; // Tipo de message: texto
     }
     elseif (strpos($message, '10') !== false ) {
         $response = '*'."Centro de Entrenamiento Internacional ⭐".'*'.'\n\n'."Consultar con un asesor https://wa.me/51963043991";
@@ -109,8 +117,7 @@ if($message!=null ){
     }  elseif (strpos($message, '9') !== false ) {
         $response = '*'."Formación y Entrenamiento".'*'.'\n\n'."⏺️ Lucha Contra Incendios".'\n'."⏺️ Brigadas de Emergencia".'\n'."⏺️ Primeros Auxilios".'\n'."⏺️ Trabajo en Equipo".'\n'."⏺️ Liderazgo";
         $type = 'text'; // Tipo de message: texto
-    } 
-    elseif (strpos($message, 'aviso') !== false || strpos($message, 'oferta') !== false) {
+    } elseif (strpos($message, 'aviso') !== false || strpos($message, 'oferta') !== false) {
         $response = "https://i.imgur.com/GOYNyt3.png"; //Aquí va el enlace de la imagen que quieres mostrar
         $type = 'image'; // Tipo de message: imagen
     } elseif (strpos($message, 'doc') !== false || strpos($message, 'documento') !== false) {
@@ -129,7 +136,7 @@ if($message!=null ){
     //LLAMAMMOS A LA FUNCION DE ENVIAR response
     require_once './enviar.php';
     //ENVIAMOS LA response VIA WHATSAPP
-    enviar($message, $type, $response,$id,$timestamp,$customer_phone);
+    enviar($message, $type, $data1, $data2, $response,$id,$timestamp,$customer_phone);
     $message = ''; 
 }
 

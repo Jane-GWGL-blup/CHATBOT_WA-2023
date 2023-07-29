@@ -5,7 +5,7 @@
 */
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
-function enviar($received, $type, $sent, $idWA,$timestamp,$customer_phone) {
+function enviar($received, $type, $data1, $data2, $sent, $idWA,$timestamp,$customer_phone) {
     require_once './conexion.php';
     //CONSULTAMOS TODOS LOS REGISTROS CON EL ID DEL MANSAJE
     $sql_quantity = "SELECT count(id) AS cantidad FROM registro WHERE id_wa='" . $idWA . "';";
@@ -68,6 +68,59 @@ function enviar($received, $type, $sent, $idWA,$timestamp,$customer_phone) {
             . '{'
             . '     "link":"' . $sent . '",'
             . '     "filename":"UNICEF.pdf"'
+            . '}'
+            . '} ';
+        } 
+        elseif($type === "course"){
+            $message = ''
+            . '{'
+            . '"messaging_product": "whatsapp", '
+            . '"recipient_type": "individual",'
+            . '"to": "' . $phone . '", '
+            . '"type": "template", '
+            . '"template": '
+            . '{'
+            . '     "name":"message_services",'
+            . '     "language":'
+            . '{'
+            . '         "code": "es_Es"'
+            . '},'
+            . '     "componentes":'
+            . '['
+            . '{'
+            . '         "type": "header", '
+            . '         "parameters":'
+            . '['
+            . '{'
+            . '             "type": "image", '
+            . '             "image":'
+            . '{'
+            . '             "link": "' . $data1 . '"'
+            . '}'
+            . '}'
+            . ']'
+            . '},' 
+            . '{'
+            . '         "type": "body", '
+            . '         "parameters":'
+            . '['
+            . '{'
+            . '             "type": "text", '
+            . '             "text": "' . $sent . '"'
+            . '},'
+            . '{'
+            . '             "type": "currency", '
+            . '             "currency": '
+            . '{'
+            . '                 "fallback_value": "' . $data2 . '"'
+            . '                 "code": "USD"'
+            . '                 "amount_1000": 120'
+            . ''
+            . '}'       
+            . '}'
+            . ']'
+            . '}'  
+            . ']'  
             . '}'
             . '} ';
         } 
