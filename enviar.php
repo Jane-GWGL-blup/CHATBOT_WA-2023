@@ -5,7 +5,7 @@
 */
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
-function enviar($received, $type, $sent, $idWA,$timestamp,$customer_phone) {
+function enviar($received, $data, $type, $sent, $idWA,$timestamp,$customer_phone) {
     require_once './conexion.php';
     //CONSULTAMOS TODOS LOS REGISTROS CON EL ID DEL MANSAJE
     $sql_quantity = "SELECT count(id) AS cantidad FROM registro WHERE id_wa='" . $idWA . "';";
@@ -28,7 +28,7 @@ function enviar($received, $type, $sent, $idWA,$timestamp,$customer_phone) {
         //IDENTIFICADOR DE NÚMERO DE TELÉFONO
         $phoneID=$_ENV['ID_PHONE'];
         //URL A DONDE SE MANDARA EL MENSAJE
-        $url = 'https://graph.facebook.com/v15.0/' . $phoneID . '/messages';
+        $url = 'https://graph.facebook.com/v17.0/' . $phoneID . '/messages';
         //CONFIGURACION DEL MENSAJE
         if($type === "text"){
             $message = ''
@@ -70,7 +70,54 @@ function enviar($received, $type, $sent, $idWA,$timestamp,$customer_phone) {
             . '     "filename":"UNICEF.pdf"'
             . '}'
             . '} ';
-        } 
+        }
+        elseif($type === "button-reply"){
+            $message = '{'
+                . '"messaging_product": "whatsapp", '
+                . '"recipient_type": "individual",'
+                . '"to": "' . $phone . '", '
+                . '"type": "interactive", '
+                . '"interactive":'
+                . '{'
+                . '     "type": "button", '
+                . '     "header":'
+                . '{'
+                . '         "type": "image",'
+                . '         "image": '
+                . '{'
+                . '         "link":"' . $data . '"'
+                . '} '
+                . '}, '
+                . '     "body":'
+                . '{'
+                . '         "text": "' . $sent . '"'
+                . '}, '
+                . '     "action":'
+                . '{'
+                . '         "buttons":'
+                . '['
+                . '{'
+                . '                 "type": "reply", '
+                . '                 "reply":'
+                . '{'
+                . '                     "id": "unique-postback-id-1",'
+                . '                     "title": "¡Gracias!" '
+                . '}'
+                . '},'
+                . '{'
+                . '                 "type": "reply", '
+                . '                 "reply":'
+                . '{'
+                . '                     "id": "unique-postback-id-2",'
+                . '                     "title": "Quiero más info" '
+                . '}'
+                . '}'
+                . ']'
+                . '}'
+                . '}'
+                . '}';
+            
+        }
 
 
         //DECLARAMOS LAS CABECERAS
